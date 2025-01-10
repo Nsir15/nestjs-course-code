@@ -1,11 +1,15 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Inject } from '@nestjs/common';
 import { UserService } from './user.service';
 
 import { LoginDto } from './dto/login.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Inject(JwtService)
+  private jwtService: JwtService;
 
   @Get('init')
   init() {
@@ -20,8 +24,15 @@ export class UserController {
         message: '登录失败',
       };
     }
+    const token = this.jwtService.sign({
+      user: {
+        username: fondUser.username,
+        roles: fondUser.roles,
+      },
+    });
     return {
       message: '登录成功',
+      token,
     };
   }
 }

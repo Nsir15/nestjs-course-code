@@ -7,26 +7,24 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Role } from './role.entity';
+import { Permission } from './permission.entity';
 
 @Entity()
-export class User {
+export class Role {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({
-    comment: '用户名',
-    length: 30,
-    nullable: true,
+    comment: '角色名称',
+    length: 50,
   })
-  username: string;
+  name: string;
 
   @Column({
-    comment: '密码',
-    length: 30,
-    nullable: true,
+    comment: '角色描述',
+    length: 100,
   })
-  password: string;
+  desc: string;
 
   @CreateDateColumn()
   createTime: Date;
@@ -34,9 +32,9 @@ export class User {
   @UpdateDateColumn()
   updateTime: Date;
 
-  @ManyToMany(() => Role)
+  @ManyToMany(() => Permission)
   @JoinTable({
-    name: 'user_role_relation',
+    name: 'role_permission_relation',
   })
-  roles: Role[];
+  permissions: Permission[];
 }
