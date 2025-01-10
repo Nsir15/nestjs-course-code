@@ -11,9 +11,15 @@ import {
 import { AaService } from './aa.service';
 import { CreateAaDto } from './dto/create-aa.dto';
 import { UpdateAaDto } from './dto/update-aa.dto';
-import { LoginGuard } from 'src/login.guard';
+import {
+  RequiredLogin,
+  RequiredPermissions,
+} from 'src/decorator/custom-decorator';
+import { PermissionGuard } from 'src/permission.guard';
 
 @Controller('aa')
+@RequiredLogin()
+@RequiredPermissions('query_aa')
 export class AaController {
   constructor(private readonly aaService: AaService) {}
 
@@ -23,7 +29,7 @@ export class AaController {
   }
 
   @Get()
-  @UseGuards(LoginGuard)
+  @UseGuards(PermissionGuard)
   findAll() {
     return this.aaService.findAll();
   }

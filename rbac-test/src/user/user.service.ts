@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository } from 'typeorm';
+import { EntityManager, In, Repository } from 'typeorm';
 import { LoginDto } from './dto/login.dto';
 import { Role } from './entities/role.entity';
 import { Permission } from './entities/permission.entity';
@@ -75,7 +75,6 @@ export class UserService {
     user1.password = 'password';
     user1.roles = [role1];
 
-    await this.entityManager.save(Role, [role1, role2]);
     await this.entityManager.save(Permission, [
       permission1,
       permission2,
@@ -86,6 +85,7 @@ export class UserService {
       permission7,
       permission8,
     ]);
+    await this.entityManager.save(Role, [role1, role2]);
     await this.entityManager.save(User, [user, user1]);
   }
 
@@ -105,5 +105,16 @@ export class UserService {
       throw new HttpException('Invalid password', 400);
     }
     return foundUser;
+  }
+
+  findRolesByIds(roleIds: number[]) {
+    return this.entityManager.find(Role, {
+      where: {
+        id: In(roleIds),
+      },
+      relations: {
+        permissions: true,
+      },
+    });
   }
 }

@@ -9,6 +9,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { AaModule } from './aa/aa.module';
 import { BbModule } from './bb/bb.module';
+import { APP_GUARD } from '@nestjs/core';
+import { LoginGuard } from './login.guard';
 
 @Module({
   imports: [
@@ -39,6 +41,12 @@ import { BbModule } from './bb/bb.module';
     BbModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD, // 注册全局的登录守卫，拦截所有路由
+      useClass: LoginGuard,
+    },
+  ],
 })
 export class AppModule {}
