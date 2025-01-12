@@ -1,4 +1,10 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
+interface PendingQueue {
+  config: AxiosRequestConfig
+  resolve: (...args: any[]) => void
+}
+let refreshing = false;
+const requestQueue:PendingQueue[] = [];
 
 function getToken(){
   return localStorage.getItem("token");
@@ -48,9 +54,25 @@ service.interceptors.response.use(
   async (error) => {
     console.log('response error:',error);
     const {data,config} = error.response;
+
+    if(refreshing){
+      return new Promise((resolve)=>{
+        requestQueue.push({
+          config,
+          resolve
+        });
+      })
+    }
     if(data.statusCode === 401 && !config.url.includes('/refreshToken')){
+      refreshing = true;
       const res = await refreshToken();
       if(res.status === 200){
+        refreshing = false;
+        requestQueue.forEach((request)=>{
+          const {config,resolve} = request;
+          resolve(service(config));
+        })
+
         return service(config);
       }else{
         alert("请重新登录.");
