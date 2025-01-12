@@ -32,7 +32,6 @@ export class PermissionGuard implements CanActivate {
       },
       [],
     );
-    // const roles = this.userService;
     const routePermissions = this.reflector.getAllAndOverride('permissions', [
       context.getHandler(),
       context.getClass(),
