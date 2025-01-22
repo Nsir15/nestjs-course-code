@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 // import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { RedisModule } from './redis/redis.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { RedisModule } from './redis/redis.module';
     }),
     UserModule,
     RedisModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
