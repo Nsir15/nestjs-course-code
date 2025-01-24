@@ -8,7 +8,7 @@ export class Permission {
   @Column({
     comment: '权限code',
   })
-  code: number;
+  code: string;
 
   @Column({
     comment: '权限描述',
