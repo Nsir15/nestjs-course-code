@@ -230,4 +230,38 @@ export class UserService {
       await queryRunner.release();
     }
   }
+
+  async findUserById(id: number, isAdmin: boolean) {
+    try {
+      const foundUser = await this.userRepository.findOne({
+        where: {
+          id,
+          isAdmin: isAdmin,
+        },
+        relations: ['roles', 'roles.permissions'],
+      });
+      if (!foundUser) {
+        throw new HttpException('用户不存在', HttpStatus.BAD_REQUEST);
+      }
+      return {
+        username: foundUser.username,
+        id: foundUser.id,
+        isAdmin,
+        roles: foundUser.roles.map((item) => item.name),
+        permissions: foundUser.roles.reduce((result, role) => {
+          role.permissions.forEach((permission) => {
+            if (!result.some((item) => item.code === permission.code)) {
+              result.push(permission);
+            }
+          });
+          return result;
+        }, []),
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('查询用户失败', HttpStatus.BAD_REQUEST);
+    }
+  }
 }

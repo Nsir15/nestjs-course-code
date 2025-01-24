@@ -8,6 +8,7 @@ import {
   Delete,
   Inject,
   Query,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,7 +17,7 @@ import { RegisterDto } from './dto/register.dto';
 import { RedisService } from 'src/redis/redis.service';
 import { EmailService } from 'src/email/email.service';
 import { LoginDto } from './dto/login.dto';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { LoginUserVo } from './vo/login-user.vo';
 
@@ -50,10 +51,7 @@ export class UserController {
 
     const refreshToken = this.jwtService.sign(
       {
-        username,
         userId: id,
-        roles,
-        permissions,
       },
       {
         expiresIn: this.configService.get('JWT_REFRESH_TOKEN_EXPIRESIN'),
@@ -76,6 +74,46 @@ export class UserController {
       html: `<h1>验证码为：${code}</h1>`,
     });
     return '发送成功';
+  }
+
+  @Post('refreshToken')
+  async refreshToken(@Body('refreshToken') refreshToken: string) {
+    try {
+      // refreshToken 里只有 userId
+      const data = this.jwtService.verify(refreshToken);
+      const user = await this.userService.findUserById(data.userId, false);
+
+      const { accessToken, refreshToken: newRefreshToken } =
+        this.generateToken(user);
+      return {
+        accessToken,
+        refreshToken: newRefreshToken,
+      };
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      throw new TokenExpiredError('refreshToken失效', error);
+    }
+  }
+
+  @Post('admin/refreshToken')
+  async adminRefreshToken(@Body('refreshToken') refreshToken: string) {
+    try {
+      const data = this.jwtService.verify(refreshToken);
+      const user = await this.userService.findUserById(data.userId, true);
+      const { accessToken, refreshToken: newRefreshToken } =
+        this.generateToken(user);
+      return {
+        accessToken,
+        refreshToken: newRefreshToken,
+      };
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      throw new UnauthorizedException('refreshToken失效');
+    }
   }
 
   @Get('initData')
