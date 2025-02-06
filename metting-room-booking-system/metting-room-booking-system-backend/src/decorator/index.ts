@@ -39,6 +39,6 @@ export const UserInfo = createParamDecorator(
     if (!request.user) {
       return null;
     }
-    return dataKey ? request[dataKey] : request;
+    return dataKey ? request.user[dataKey] : request.user;
   },
 );

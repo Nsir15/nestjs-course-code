@@ -6,7 +6,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserDto } from './dto/update-user-info.dto';
 import { RegisterDto } from './dto/register.dto';
 import { RedisService } from 'src/redis/redis.service';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -16,7 +16,8 @@ import { md5 } from 'src/utils';
 import { Role } from './entities/role.entity';
 import { Permission } from './entities/permission.entity';
 import { LoginDto } from './dto/login.dto';
-import { LoginUserVo } from './vo/login-user.vo';
+import { IUserInfo, LoginUserVo } from './vo/login-user.vo';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @Injectable()
 export class UserService {
@@ -262,6 +263,89 @@ export class UserService {
         throw error;
       }
       throw new HttpException('查询用户失败', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async userInfo(userId: number) {
+    const foundUser = await this.userRepository.findOneBy({
+      id: userId,
+    });
+    if (!foundUser) {
+      throw new HttpException('用户不存在', HttpStatus.BAD_REQUEST);
+    }
+    const user: IUserInfo = {
+      id: foundUser.id,
+      username: foundUser.username,
+      nickName: foundUser.nickName,
+      email: foundUser.email,
+      phoneNumber: foundUser.phoneNumber,
+      headPic: foundUser.headPic,
+      isAdmin: foundUser.isAdmin,
+      isFrozen: foundUser.isFrozen,
+      createTime: foundUser.createTime,
+      updateTime: foundUser.updateTime,
+      roles: foundUser.roles.map((item) => item.name),
+    };
+    return user;
+  }
+
+  async updatePassword(userId: number, passwordDto: UpdatePasswordDto) {
+    const { email } = passwordDto;
+    const foundUser = await this.userRepository.findOneBy({
+      id: userId,
+    });
+    if (foundUser.email !== email) {
+      throw new HttpException('邮箱与注册邮箱不匹配', HttpStatus.BAD_REQUEST);
+    }
+    const captcha = await this.redisService.get(
+      `update_password_captcha_${email}`,
+    );
+    if (!captcha) {
+      throw new HttpException('验证码已过期', HttpStatus.BAD_REQUEST);
+    }
+    if (captcha !== passwordDto.captcha) {
+      throw new HttpException('验证码错误', HttpStatus.BAD_REQUEST);
+    }
+
+    foundUser.password = md5(passwordDto.password);
+    try {
+      await this.userRepository.save(foundUser);
+      return '修改成功';
+    } catch (error) {
+      this.logger.error(error, UserService);
+      throw new HttpException('更新密码失败', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async updateUser(userId: number, userDto: UpdateUserDto) {
+    const foundUser = await this.userRepository.findOneBy({
+      id: userId,
+    });
+    if (foundUser.email !== userDto.email) {
+      throw new HttpException('邮箱与注册邮箱不匹配', HttpStatus.BAD_REQUEST);
+    }
+    const captcha = await this.redisService.get(
+      `update_user_captcha_${userDto.email}`,
+    );
+    if (!captcha) {
+      throw new HttpException('验证码已过期', HttpStatus.BAD_REQUEST);
+    }
+    if (captcha !== userDto.captcha) {
+      throw new HttpException('验证码错误', HttpStatus.BAD_REQUEST);
+    }
+    if (userDto.headPic) {
+      foundUser.headPic = userDto.headPic;
+    }
+    if (userDto.nickName) {
+      foundUser.nickName = userDto.nickName;
+    }
+
+    try {
+      await this.userRepository.save(foundUser);
+      return '修改成功';
+    } catch (error) {
+      this.logger.error(error, UserService);
+      throw new HttpException('更新用户信息失败', HttpStatus.BAD_REQUEST);
     }
   }
 }

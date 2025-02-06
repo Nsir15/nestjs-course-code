@@ -11,8 +11,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserDto } from './dto/update-user-info.dto';
 import { RegisterDto } from './dto/register.dto';
 import { RedisService } from 'src/redis/redis.service';
 import { EmailService } from 'src/email/email.service';
@@ -20,7 +19,18 @@ import { LoginDto } from './dto/login.dto';
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { LoginUserVo } from './vo/login-user.vo';
+import { RequireLogin, UserInfo } from 'src/decorator';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
+enum AllowTypes {
+  Register = 'Register',
+  UpdatePassword = 'UpdatePassword',
+  UpdateUser = 'UpdateUser',
+}
+type UpdateCaptchaQueryParams = {
+  address: string;
+  type: AllowTypes;
+};
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -74,6 +84,40 @@ export class UserController {
       html: `<h1>验证码为：${code}</h1>`,
     });
     return '发送成功';
+  }
+
+  @Get('getCaptcha')
+  async getUpdateCaptcha(@Query() query: UpdateCaptchaQueryParams) {
+    const { address, type } = query;
+    const code = Math.random().toString().slice(2, 6);
+    let key = '';
+    switch (type) {
+      case AllowTypes.UpdatePassword:
+        key = `update_password_captcha_${address}`;
+        break;
+      case AllowTypes.UpdateUser:
+        key = `update_user_captcha_${address}`;
+        break;
+      case AllowTypes.Register:
+        key = `captcha_${address}`;
+        break;
+      default:
+        // const exhaustiveCheck: never = type;
+        // break;
+        throw new Error('未知类型');
+    }
+    await this.redisService.set(key, code, 5 * 60);
+    await this.emailService.sendMail({
+      to: address,
+      subject: '验证码',
+      html: `<h1>验证码为：${code}</h1>`,
+    });
+    return '发送成功';
+  }
+
+  @Get('userInfo')
+  async userInfo(@UserInfo('userId') userId: number) {
+    return await this.userService.userInfo(userId);
   }
 
   @Post('refreshToken')
@@ -142,33 +186,26 @@ export class UserController {
     return vo;
   }
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.userService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
-  }
-
   @Post('register')
   async register(@Body() registerUser: RegisterDto) {
     return await this.userService.register(registerUser);
+  }
+
+  @Post(['updatePassword', 'admin/updatePassword'])
+  @RequireLogin()
+  async updatePassword(
+    @UserInfo('userId') userId: number,
+    @Body() passwordDto: UpdatePasswordDto,
+  ) {
+    return await this.userService.updatePassword(userId, passwordDto);
+  }
+
+  @Post(['updateUser', 'admin/updateUser'])
+  @RequireLogin()
+  async updateUser(
+    @UserInfo('userId') userId: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return await this.userService.updateUser(userId, updateUserDto);
   }
 }
