@@ -11,7 +11,7 @@ import { RegisterDto } from './dto/register.dto';
 import { RedisService } from 'src/redis/redis.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository, DataSource } from 'typeorm';
+import { Repository, DataSource, ILike } from 'typeorm';
 import { md5 } from 'src/utils';
 import { Role } from './entities/role.entity';
 import { Permission } from './entities/permission.entity';
@@ -37,22 +37,6 @@ export class UserService {
 
   @InjectRepository(Permission)
   private readonly permissionRepository: Repository<Permission>;
-
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
-
-  findAll() {
-    return `This action returns all user`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
 
   remove(id: number) {
     return `This action removes a #${id} user`;
@@ -347,5 +331,62 @@ export class UserService {
       this.logger.error(error, UserService);
       throw new HttpException('更新用户信息失败', HttpStatus.BAD_REQUEST);
     }
+  }
+
+  async freeze(userId: number) {
+    const foundUser = await this.userRepository.findOneBy({
+      id: userId,
+    });
+    foundUser.isFrozen = true;
+    await this.userRepository.save(foundUser);
+    return '冻结成功';
+  }
+
+  /**
+   * 
+   * @param param0 
+   * @returns 
+   * 
+   * ILike 操作符：这是 TypeORM 提供的操作符，用于执行不区分大小写的模糊查询。若需要区分大小写，可使用 Like 操作符
+     模糊匹配模式：
+      %${username}%：表示在 username 字段中，只要包含 username 变量的值即可匹配。
+      ${nickName}%：表示 nickName 字段以 nickName 变量的值开头即可匹配。
+      ${email}%：表示 email 字段以 email 变量的值开头即可匹配。
+   */
+  async list({
+    offset,
+    limit,
+    username,
+    nickName,
+    email,
+  }: {
+    offset: number;
+    limit: number;
+    username: string;
+    nickName: string;
+    email: string;
+  }) {
+    const condition: Record<string, any> = {};
+    if (username) {
+      condition.username = ILike(`%${username}%`);
+    }
+    if (nickName) {
+      condition.nickName = ILike(`${nickName}%`);
+    }
+    if (email) {
+      condition.email = ILike(`${email}%`);
+    }
+
+    const skip = (offset - 1) * limit;
+
+    const [users, total] = await this.userRepository.findAndCount({
+      skip,
+      take: limit,
+      where: condition,
+    });
+    return {
+      users,
+      total,
+    };
   }
 }

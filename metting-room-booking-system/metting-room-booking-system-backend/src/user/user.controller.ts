@@ -3,12 +3,10 @@ import {
   Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
   Inject,
   Query,
   UnauthorizedException,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user-info.dto';
@@ -21,6 +19,7 @@ import { ConfigService } from '@nestjs/config';
 import { LoginUserVo } from './vo/login-user.vo';
 import { RequireLogin, UserInfo } from 'src/decorator';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { generateParseIntPipe } from 'src/utils';
 
 enum AllowTypes {
   Register = 'Register',
@@ -31,6 +30,15 @@ type UpdateCaptchaQueryParams = {
   address: string;
   type: AllowTypes;
 };
+
+type ListQueryParams = {
+  offset?: number;
+  limit?: number;
+  username?: string;
+  nickName?: string;
+  email?: string;
+};
+
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -118,6 +126,29 @@ export class UserController {
   @Get('userInfo')
   async userInfo(@UserInfo('userId') userId: number) {
     return await this.userService.userInfo(userId);
+  }
+
+  @Get('list')
+  async list(
+    @Query('offset', new DefaultValuePipe(1), generateParseIntPipe('offset'))
+    offset: number,
+    @Query('limit', new DefaultValuePipe(2), generateParseIntPipe('limit'))
+    limit: number,
+    @Query() query: ListQueryParams,
+  ) {
+    const { username, nickName, email } = query;
+    return await this.userService.list({
+      offset,
+      limit,
+      username,
+      nickName,
+      email,
+    });
+  }
+
+  @Get('freeze')
+  async freeze(@Query('userId') userId: number) {
+    return await this.userService.freeze(userId);
   }
 
   @Post('refreshToken')
