@@ -1,0 +1,18 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# 表示是最顶层的配置文件
+root = true
+
+# 匹配所有文件
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# 匹配前端相关文件
+[*.{js,jsx,ts,tsx,css,less,scss,vue,json,html}]
+indent_style = space
+indent_size = 2
+quote_type = single
+semi = false
