@@ -18,12 +18,12 @@ export class CustomExceptionFilter implements ExceptionFilter {
     response.statusCode = statusCode;
     response.json({
       code: statusCode,
-      message: 'fail',
-      data: exceptionMessage
+      message: exceptionMessage
         ? Array.isArray(exceptionMessage)
           ? exceptionMessage.join(',')
           : exceptionMessage
         : exception.message,
+      data: null,
       timestamp: new Date().toISOString(),
       path: host.switchToHttp().getRequest().url,
     });

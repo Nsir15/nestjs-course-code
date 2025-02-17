@@ -144,7 +144,10 @@ export class UserService {
       return vo;
     } catch (error) {
       this.logger.error(error, UserService);
-      throw new HttpException('登录失败', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        error.message || '登录失败',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
   async initData() {
