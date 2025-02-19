@@ -5,7 +5,6 @@ import {
   Injectable,
   Logger,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user-info.dto';
 import { RegisterDto } from './dto/register.dto';
 import { RedisService } from 'src/redis/redis.service';
@@ -276,10 +275,10 @@ export class UserService {
     return user;
   }
 
-  async updatePassword(userId: number, passwordDto: UpdatePasswordDto) {
-    const { email } = passwordDto;
+  async updatePassword(passwordDto: UpdatePasswordDto) {
+    const { email, username } = passwordDto;
     const foundUser = await this.userRepository.findOneBy({
-      id: userId,
+      username,
     });
     if (foundUser.email !== email) {
       throw new HttpException('邮箱与注册邮箱不匹配', HttpStatus.BAD_REQUEST);
@@ -290,7 +289,7 @@ export class UserService {
     if (!captcha) {
       throw new HttpException('验证码已过期', HttpStatus.BAD_REQUEST);
     }
-    if (captcha !== passwordDto.captcha) {
+    if (captcha.toString() !== passwordDto.captcha.toString()) {
       throw new HttpException('验证码错误', HttpStatus.BAD_REQUEST);
     }
 

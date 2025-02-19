@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Transporter, createTransport } from 'nodemailer';
 
@@ -18,6 +18,9 @@ export class EmailService {
   }
 
   async sendMail({ to, subject, html }) {
+    if (!to) {
+      throw new HttpException('邮箱地址不能为空', 400);
+    }
     await this.transporter.sendMail({
       from: {
         name: '会议室预定系统', // sender address

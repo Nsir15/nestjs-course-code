@@ -224,11 +224,8 @@ export class UserController {
 
   @Post(['updatePassword', 'admin/updatePassword'])
   @RequireLogin()
-  async updatePassword(
-    @UserInfo('userId') userId: number,
-    @Body() passwordDto: UpdatePasswordDto,
-  ) {
-    return await this.userService.updatePassword(userId, passwordDto);
+  async updatePassword(@Body() passwordDto: UpdatePasswordDto) {
+    return await this.userService.updatePassword(passwordDto);
   }
 
   @Post(['updateUser', 'admin/updateUser'])
