@@ -77,11 +77,11 @@ import { PermissionGuard } from './guards/permission.guard';
   providers: [
     AppService,
     {
-      provide: 'APP_GUARD',
+      provide: 'APP_GUARD', // 在模块中注册全局守卫,这种方式注册的守卫同样会应用到整个应用的所有路由处理程序上
       useClass: LoginGuard,
     },
     {
-      provide: 'APP_GUARD',
+      provide: 'APP_GUARD', // 在模块中注册全局守卫
       useClass: PermissionGuard,
     },
   ],

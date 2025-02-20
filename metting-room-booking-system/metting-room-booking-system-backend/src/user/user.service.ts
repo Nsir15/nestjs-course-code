@@ -234,6 +234,7 @@ export class UserService {
         username: foundUser.username,
         id: foundUser.id,
         isAdmin,
+        email: foundUser.email,
         roles: foundUser.roles.map((item) => item.name),
         permissions: foundUser.roles.reduce((result, role) => {
           role.permissions.forEach((permission) => {
@@ -253,8 +254,11 @@ export class UserService {
   }
 
   async userInfo(userId: number) {
-    const foundUser = await this.userRepository.findOneBy({
-      id: userId,
+    const foundUser = await this.userRepository.findOne({
+      where: {
+        id: userId,
+      },
+      relations: ['roles'],
     });
     if (!foundUser) {
       throw new HttpException('用户不存在', HttpStatus.BAD_REQUEST);
@@ -270,7 +274,7 @@ export class UserService {
       isFrozen: foundUser.isFrozen,
       createTime: foundUser.createTime,
       updateTime: foundUser.updateTime,
-      roles: foundUser.roles.map((item) => item.name),
+      roles: foundUser.roles?.map((item) => item.name),
     };
     return user;
   }
@@ -316,7 +320,7 @@ export class UserService {
     if (!captcha) {
       throw new HttpException('验证码已过期', HttpStatus.BAD_REQUEST);
     }
-    if (captcha !== userDto.captcha) {
+    if (captcha.toString() !== userDto.captcha.toString()) {
       throw new HttpException('验证码错误', HttpStatus.BAD_REQUEST);
     }
     if (userDto.headPic) {

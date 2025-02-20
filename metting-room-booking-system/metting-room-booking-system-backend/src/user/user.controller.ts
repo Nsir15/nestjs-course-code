@@ -24,7 +24,7 @@ import { generateParseIntPipe } from 'src/utils';
 enum AllowTypes {
   Register = 'Register',
   UpdatePassword = 'UpdatePassword',
-  UpdateUser = 'UpdateUser',
+  // UpdateUser = 'UpdateUser',
 }
 type UpdateCaptchaQueryParams = {
   address: string;
@@ -56,12 +56,13 @@ export class UserController {
   private readonly jwtService: JwtService;
 
   private generateToken(userInfo: LoginUserVo['userInfo']) {
-    const { username, id, roles, permissions } = userInfo;
+    const { username, id, roles, permissions, email } = userInfo;
     const accessToken = this.jwtService.sign(
       {
         username,
         userId: id,
         roles,
+        email,
         permissions,
       },
       { expiresIn: this.configService.get('JWT_ACCESS_TOKEN_EXPIRESIN') },
@@ -94,8 +95,21 @@ export class UserController {
     return '发送成功';
   }
 
+  @Get('/updateUser/getCaptcha')
+  @RequireLogin()
+  async getUpdateUserCaptcha(@UserInfo('email') address: string) {
+    const code = Math.random().toString().slice(2, 6);
+    await this.redisService.set('update_user_captcha_' + address, code, 5 * 60);
+    await this.emailService.sendMail({
+      to: address,
+      subject: '验证码',
+      html: `<h1>验证码为：${code}</h1>`,
+    });
+    return '发送成功';
+  }
+
   @Get('getCaptcha')
-  async getUpdateCaptcha(@Query() query: UpdateCaptchaQueryParams) {
+  async getCaptcha(@Query() query: UpdateCaptchaQueryParams) {
     const { address, type } = query;
     const code = Math.random().toString().slice(2, 6);
     let key = '';
@@ -103,9 +117,11 @@ export class UserController {
       case AllowTypes.UpdatePassword:
         key = `update_password_captcha_${address}`;
         break;
-      case AllowTypes.UpdateUser:
-        key = `update_user_captcha_${address}`;
-        break;
+      // case AllowTypes.UpdateUser:
+      //   // 更新用户是登录后的操作，所以邮箱直接从用户信息中获取，不需要再传邮箱过来
+      //   address = email;
+      //   key = `update_user_captcha_${address}`;
+      //   break;
       case AllowTypes.Register:
         key = `captcha_${address}`;
         break;
@@ -124,6 +140,7 @@ export class UserController {
   }
 
   @Get('userInfo')
+  @RequireLogin()
   async userInfo(@UserInfo('userId') userId: number) {
     return await this.userService.userInfo(userId);
   }
@@ -168,7 +185,7 @@ export class UserController {
       if (error instanceof UnauthorizedException) {
         throw error;
       }
-      throw new TokenExpiredError('refreshToken失效', error);
+      throw new UnauthorizedException('refreshToken失效', error);
     }
   }
 
