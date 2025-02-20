@@ -1,0 +1,23 @@
+.layoutContainer {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  .header {
+    height: 80px;
+    border-bottom: 1px solid #aaa;
+    line-height: 80px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+  }
+
+  .icon {
+    font-size: 40px;
+    margin-top: 20px;
+  }
+
+  .body {
+    flex: 1;
+  }
+}
