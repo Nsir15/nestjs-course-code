@@ -3,20 +3,11 @@ export namespace Login {
     username: string
     password: string
   }
-
   export interface ILoginResult {
     accessToken: string
     refreshToken: string
-    userInfo: {
-      id: number
-      username: string
-      nickname: string
-      headPic: string
-      phoneNumber: string
-      isFrozen: boolean
-      isAdmin: boolean
-      roles: string[]
-    }
+    userInfo: User.IUserInfoData
+    [property: string]: any
   }
 }
 
@@ -39,5 +30,20 @@ export namespace User {
     email: string
     captcha: number
     headPic: string
+  }
+
+  export interface IUserInfoData {
+    createTime: string
+    email: string
+    headPic: null
+    id: number
+    isAdmin: boolean
+    isFrozen: boolean
+    nickName: string
+    phoneNumber: null
+    roles: string[]
+    updateTime: string
+    username: string
+    [property: string]: any
   }
 }

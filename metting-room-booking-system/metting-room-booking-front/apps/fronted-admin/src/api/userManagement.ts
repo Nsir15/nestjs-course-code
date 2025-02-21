@@ -8,3 +8,15 @@ export const getUserList = (params: User.IUserListSearchParams) => {
 export const freezeUser = (userId: number) => {
   return request.get('/user/freeze', { userId })
 }
+
+export const getUserInfo = () => {
+  return request.get<User.IUserInfoData>('/user/userInfo')
+}
+
+export const updateUserInfo = (params: any) => {
+  return request.post('user/admin/updateUser', params)
+}
+
+export const getUpdateUserCaptcha = () => {
+  return request.get('/user/updateUser/getCaptcha')
+}

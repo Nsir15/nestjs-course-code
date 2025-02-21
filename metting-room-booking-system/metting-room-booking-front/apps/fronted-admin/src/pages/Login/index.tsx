@@ -2,7 +2,7 @@ import { FC, memo } from 'react'
 import styles from './index.module.scss'
 import { Button, Form, Input } from 'antd'
 import { Login } from '@/types/api'
-import { wrapRequest, message } from '@meeting-room/shared'
+import { wrapRequest, message, Storage } from '@meeting-room/shared'
 import { login } from '@/api/login'
 import { useNavigate } from 'react-router-dom'
 
@@ -27,6 +27,8 @@ const Component: FC<IProps> = (props) => {
     const [, data] = await wrapRequest(login(values))
     if (data) {
       message.success('登录成功')
+      Storage.set('token', data.accessToken)
+      Storage.set('refreshToken', data.refreshToken)
       navigate('/', { replace: true })
     }
   }
