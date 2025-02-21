@@ -30,5 +30,11 @@ module.exports = {
   rules: {
     'react/react-in-jsx-scope': 'off',
     'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+    '@typescript-eslint/no-empty-interface': [
+      'warn',
+      {
+        allowSingleExtends: true, // 允许空接口用于扩展场景
+      },
+    ],
   },
 }

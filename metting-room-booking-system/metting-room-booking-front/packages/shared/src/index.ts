@@ -14,6 +14,5 @@ export { default as Storage } from './utils/storage':
  */
 export { default as Storage } from './utils/Storage'
 export { default as request } from './request/request'
-export { default as AntdGlobal } from './components/AntdGlobal'
-export { message, modal, notification } from './components/AntdGlobal'
+export * from './components'
 export * from './request/wrapRequest'

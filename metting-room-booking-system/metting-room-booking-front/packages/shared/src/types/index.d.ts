@@ -3,3 +3,8 @@ declare interface IResponse {
   data?: any
   message: string
 }
+
+declare module '*.scss' {
+  const classes: { readonly [key: string]: string }
+  export default classes
+}

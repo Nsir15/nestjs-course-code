@@ -1,14 +1,7 @@
 {
   "name": "@meeting-room/shared",
-  "exports": {
-    ".": {
-      "import": "./src/index.ts",
-      "require": "./src/index.ts"
-    },
-    "./components/*": {
-      "import": "./src/components/*",
-      "require": "./src/components/*"
-    }
+  "scripts": {
+    "lint": "eslint \"src/**/*.{ts,tsx}\""
   },
   "version": "1.0.0",
   "private": true,
@@ -18,5 +11,16 @@
     "axios": "^1.7.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.8",
+    "@eslint/js": "^9.19.0",
+    "eslint": "^8.x.x",
+    "@typescript-eslint/parser": "^5.x.x",
+    "@typescript-eslint/eslint-plugin": "^5.x.x",
+    "eslint-plugin-react": "^7.x.x",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "prettier": "^2.8.8"
   }
 }

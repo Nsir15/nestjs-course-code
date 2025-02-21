@@ -1,0 +1,14 @@
+.pageTableContainer {
+  display: flex;
+  flex-direction: column;
+  .tableContainer {
+    margin-top: 20px;
+    padding: 0 15px;
+    background-color: #fff;
+    .tableHeader {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+}

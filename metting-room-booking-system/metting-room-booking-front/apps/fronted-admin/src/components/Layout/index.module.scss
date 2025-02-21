@@ -1,0 +1,37 @@
+.layoutContainer {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  .header {
+    height: 60px;
+    line-height: 60px;
+    border-bottom: 1px solid #aaa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    box-sizing: border-box;
+
+    .icon {
+      font-size: 30px;
+      cursor: pointer;
+    }
+  }
+
+  .body {
+    flex: 1;
+    display: flex;
+    background-color: #f0f2f5;
+
+    .aside {
+      height: 100%;
+      // width: 60px;
+    }
+    .content {
+      flex: auto;
+      padding: 10px;
+    }
+  }
+}

@@ -311,6 +311,7 @@ export class UserService {
     const foundUser = await this.userRepository.findOneBy({
       id: userId,
     });
+
     if (foundUser.email !== userDto.email) {
       throw new HttpException('邮箱与注册邮箱不匹配', HttpStatus.BAD_REQUEST);
     }
