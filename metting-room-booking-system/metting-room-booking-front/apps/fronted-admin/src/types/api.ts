@@ -33,4 +33,11 @@ export namespace User {
     users: Record<string, any>[]
     total: number
   }
+
+  export interface IUpdateUserInfoParams {
+    nickname?: string
+    email: string
+    captcha: number
+    headPic: string
+  }
 }

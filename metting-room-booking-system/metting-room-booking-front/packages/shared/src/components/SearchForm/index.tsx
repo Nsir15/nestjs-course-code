@@ -34,6 +34,7 @@ const Component: FC<PropsWithChildren<ISearchFormProps>> = (props) => {
             case 'input':
               return (
                 <Form.Item
+                  key={item.name}
                   label={item.label}
                   name={item.name}
                   rules={item.rules}
@@ -46,6 +47,7 @@ const Component: FC<PropsWithChildren<ISearchFormProps>> = (props) => {
             case 'select':
               return (
                 <Form.Item
+                  key={item.name}
                   label={item.label}
                   name={item.name}
                   rules={item.rules}

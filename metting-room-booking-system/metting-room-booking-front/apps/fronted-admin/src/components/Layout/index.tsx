@@ -1,21 +1,27 @@
 import { FC, memo } from 'react'
 import styles from './index.module.scss'
-import { UserOutlined } from '@ant-design/icons'
 import { Outlet } from 'react-router-dom'
 import NavMenu from '../NavMenu'
+import NavHeader from '../NavHeader'
 
-interface IProps {}
+export enum ELayoutEnum {
+  layoutContainer = 'layoutContainer',
+  userEditorContainer = 'userEditorContainer',
+}
+
+interface IProps {
+  layoutType?: ELayoutEnum
+}
+
 const Component: FC<IProps> = (props) => {
-  // const {} = props
+  const { layoutType = ELayoutEnum.layoutContainer } = props
+
   return (
     <div className={styles.layoutContainer}>
-      <div className={styles.header}>
-        <h1>会议室预定系统</h1>
-        <UserOutlined className={styles.icon}></UserOutlined>
-      </div>
+      <NavHeader></NavHeader>
       <div className={styles.body}>
         <div className={styles.aside}>
-          <NavMenu></NavMenu>
+          <NavMenu layoutType={layoutType}></NavMenu>
         </div>
         <div className={styles.content}>
           <Outlet></Outlet>

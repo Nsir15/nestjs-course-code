@@ -1,0 +1,13 @@
+.uploadAvatarContainer {
+  :global {
+    .ant-upload-drag {
+      width: 128px !important;
+      height: 128px !important;
+      border-radius: 50%;
+
+      .ant-upload {
+        padding: 0;
+      }
+    }
+  }
+}

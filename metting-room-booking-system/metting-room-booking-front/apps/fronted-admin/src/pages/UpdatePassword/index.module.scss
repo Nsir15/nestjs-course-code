@@ -1,0 +1,12 @@
+.updatePasswordContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+
+  .formContent {
+    width: 500px;
+    margin-top: 50px;
+  }
+}
