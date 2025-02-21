@@ -1,6 +1,7 @@
 .layoutContainer {
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 
@@ -22,6 +23,7 @@
 
   .body {
     flex: 1;
+    overflow: hidden;
     display: flex;
     background-color: #f0f2f5;
 
@@ -30,6 +32,8 @@
       // width: 60px;
     }
     .content {
+      height: 100%;
+      overflow: hidden;
       flex: auto;
       padding: 10px;
     }

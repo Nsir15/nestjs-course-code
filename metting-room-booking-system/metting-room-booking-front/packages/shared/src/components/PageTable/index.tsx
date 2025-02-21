@@ -12,7 +12,7 @@ interface IProps extends ISearchFormProps {
 }
 
 const Component: FC<PropsWithChildren<IProps>> = (props) => {
-  const { title, operators, ...searchFormProps } = props
+  const { title, operators, children, ...searchFormProps } = props
   return (
     <div className={styles.pageTableContainer}>
       <SearchForm {...searchFormProps}></SearchForm>
@@ -23,7 +23,12 @@ const Component: FC<PropsWithChildren<IProps>> = (props) => {
             <Space>
               {operators?.map((item, index) => {
                 return (
-                  <Button type="primary" key={`table-action-key-${index}`} onClick={item.onClick}>
+                  <Button
+                    type="primary"
+                    size="small"
+                    key={`table-action-key-${index}`}
+                    onClick={item.onClick}
+                  >
                     {item.label}
                   </Button>
                 )
@@ -31,7 +36,7 @@ const Component: FC<PropsWithChildren<IProps>> = (props) => {
             </Space>
           </div>
         </div>
-        {props.children}
+        {children}
       </div>
     </div>
   )

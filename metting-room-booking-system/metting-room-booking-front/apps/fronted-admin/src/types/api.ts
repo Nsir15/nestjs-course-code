@@ -25,5 +25,12 @@ export namespace User {
     username?: string
     nickname?: string
     email?: string
+    limit?: number
+    offset?: number
+  }
+
+  export interface IUserListResult {
+    users: Record<string, any>[]
+    total: number
   }
 }
