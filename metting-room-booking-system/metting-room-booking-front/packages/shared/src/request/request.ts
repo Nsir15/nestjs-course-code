@@ -124,8 +124,18 @@ const put = <T>(url: string, data?: unknown): Promise<T> => {
   return instance.put(url, data)
 }
 
+const patch = <T>(url: string, params?: unknown): Promise<T> => {
+  return instance.patch(url, params)
+}
+
+const mDelete = <T>(url: string, params?: unknown): Promise<T> => {
+  return instance.delete(url, { params })
+}
+
 export default {
   get,
   post,
   put,
+  patch,
+  delete: mDelete,
 }

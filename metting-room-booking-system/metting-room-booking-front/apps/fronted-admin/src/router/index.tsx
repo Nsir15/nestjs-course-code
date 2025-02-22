@@ -5,6 +5,9 @@ import Login from '@/pages/Login'
 import UserManagement from '@/pages/UserManagement'
 import UpdatePassword from '@/pages/UpdatePassword'
 import UpdateUserInfo from '@/pages/UpdateUserInfo'
+import MeetingRoomManage from '@/pages/MeetingRoomManage'
+import BookingManage from '@/pages/BookingManage'
+import Statistics from '@/pages/Statistics'
 
 export const routes: RouteObject[] = [
   {
@@ -19,6 +22,18 @@ export const routes: RouteObject[] = [
       {
         path: '/userManagement',
         element: <UserManagement />,
+      },
+      {
+        path: '/meetingRoomManage',
+        element: <MeetingRoomManage></MeetingRoomManage>,
+      },
+      {
+        path: '/bookingManage',
+        element: <BookingManage></BookingManage>,
+      },
+      {
+        path: '/statistics',
+        element: <Statistics></Statistics>,
       },
     ],
   },

@@ -18,11 +18,11 @@ const Component: FC<IProps> = (props) => {
     layoutType === ELayoutEnum.layoutContainer
       ? [
           {
-            key: '1',
+            key: '/meetingRoomManage',
             label: '会议室管理',
           },
           {
-            key: '2',
+            key: '/bookingManage',
             label: '预定管理',
           },
           {
@@ -30,7 +30,7 @@ const Component: FC<IProps> = (props) => {
             label: '用户管理',
           },
           {
-            key: '4',
+            key: '/statistics',
             label: '统计',
           },
         ]

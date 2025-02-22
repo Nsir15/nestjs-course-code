@@ -47,3 +47,45 @@ export namespace User {
     [property: string]: any
   }
 }
+
+export namespace MeetingRoom {
+  export interface IListParams {
+    limit?: number
+    name?: string
+    offset?: number
+    status?: Status
+    [property: string]: any
+  }
+
+  export enum Status {
+    Available = 'available',
+    Reversed = 'reversed',
+  }
+
+  export interface IListData {
+    limit: number
+    list: ListItem[]
+    offset: number
+    total: number
+    [property: string]: any
+  }
+
+  export interface ListItem {
+    capacity: number
+    createTime: string
+    description: string
+    equipment: string
+    id: number
+    location: string
+    name: string
+    status: string
+    updateTime: string
+    [property: string]: any
+  }
+
+  export interface ICreateParams extends Omit<ListItem, 'createTime' | 'updateTime' | 'id'> {}
+
+  export interface IUpdateParams extends Partial<ICreateParams> {
+    id: number
+  }
+}

@@ -46,14 +46,8 @@ const Component: FC<PropsWithChildren<ISearchFormProps>> = (props) => {
 
             case 'select':
               return (
-                <Form.Item
-                  key={item.name}
-                  label={item.label}
-                  name={item.name}
-                  rules={item.rules}
-                  style={{ width: item.width }}
-                >
-                  <Select options={item.options}></Select>
+                <Form.Item key={item.name} label={item.label} name={item.name} rules={item.rules}>
+                  <Select style={{ width: item.width || 120 }} options={item.options}></Select>
                 </Form.Item>
               )
             default:
