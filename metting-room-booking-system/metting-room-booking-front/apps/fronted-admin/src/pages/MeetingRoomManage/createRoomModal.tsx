@@ -97,7 +97,7 @@ const Component = forwardRef<ICreateRoomModalRef, IProps>((props, refs) => {
           ></Select>
         </Form.Item>
         <Form.Item label="备注" name="description">
-          <Input allowClear></Input>
+          <Input.TextArea allowClear></Input.TextArea>
         </Form.Item>
       </Form>
     </Modal>
