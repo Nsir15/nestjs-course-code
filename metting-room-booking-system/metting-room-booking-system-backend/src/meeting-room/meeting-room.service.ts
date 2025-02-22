@@ -64,8 +64,8 @@ export class MeetingRoomService {
     };
   }
 
-  create(createMeetingRoomDto: CreateMeetingRoomDto) {
-    const foundMeetingRoom = this.repository.findOneBy({
+  async create(createMeetingRoomDto: CreateMeetingRoomDto) {
+    const foundMeetingRoom = await this.repository.findOneBy({
       name: createMeetingRoomDto.name,
     });
     if (foundMeetingRoom) {
@@ -75,7 +75,8 @@ export class MeetingRoomService {
     const meetingRoom = new MeetingRoom();
     Object.assign(meetingRoom, createMeetingRoomDto);
 
-    return this.repository.insert(meetingRoom);
+    await this.repository.insert(meetingRoom);
+    return '创建成功';
   }
 
   async findOne(id: number) {
