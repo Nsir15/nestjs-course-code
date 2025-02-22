@@ -1,5 +1,5 @@
 import { FC, memo } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
 import styles from './index.module.scss'
 import { UserOutlined } from '@ant-design/icons'
 
@@ -11,7 +11,9 @@ const Component: FC<IProps> = () => {
   return (
     <div className={styles.layoutContainer}>
       <div className={styles.header}>
-        <h1>会议室预定系统</h1>
+        <Link to={'/'}>
+          <h1>会议室预定系统</h1>
+        </Link>
         <UserOutlined className={styles.icon} onClick={() => navigate('/updateInfo')} />
       </div>
       <div className={styles.body}>

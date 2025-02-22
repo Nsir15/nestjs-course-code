@@ -1,0 +1,19 @@
+.menuLayoutContainer {
+  height: 100%;
+  width: 100%;
+  display: flex;
+
+  .aside {
+    width: 200px;
+    height: 100%;
+
+    :global(.ant-menu) {
+      height: 100%;
+    }
+  }
+  .content {
+    flex: auto;
+    padding: 10px 15px;
+    background-color: #efefef;
+  }
+}

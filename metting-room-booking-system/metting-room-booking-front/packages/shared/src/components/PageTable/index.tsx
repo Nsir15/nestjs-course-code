@@ -3,7 +3,7 @@ import styles from './index.module.scss'
 import SearchForm, { ISearchFormProps } from '../SearchForm'
 import { Button, Space } from 'antd'
 
-interface IProps extends ISearchFormProps {
+export interface IPageTableProps extends ISearchFormProps {
   title: string
   operators?: Array<{
     label: string
@@ -11,7 +11,7 @@ interface IProps extends ISearchFormProps {
   }>
 }
 
-const Component: FC<PropsWithChildren<IProps>> = (props) => {
+const Component: FC<PropsWithChildren<IPageTableProps>> = (props) => {
   const { title, operators, children, ...searchFormProps } = props
   return (
     <div className={styles.pageTableContainer}>
