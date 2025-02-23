@@ -1,6 +1,6 @@
 import { FC, memo, PropsWithChildren } from 'react'
 import styles from './index.module.scss'
-import { Button, Form, FormInstance, Input, Select, Space } from 'antd'
+import { Button, Form, FormInstance, Input, Select, Space, DatePicker } from 'antd'
 
 export interface ISearchFormProps {
   form?: FormInstance<any>
@@ -12,7 +12,8 @@ export interface ISearchFormProps {
       message: string
     }>
     width?: number
-    type: 'select' | 'input'
+    type: 'select' | 'input' | 'rangePicker'
+    showTime?: boolean // 是给 rangePicker 用的
     placeholder?: string
     options?: Array<{
       label: string
@@ -48,6 +49,12 @@ const Component: FC<PropsWithChildren<ISearchFormProps>> = (props) => {
               return (
                 <Form.Item key={item.name} label={item.label} name={item.name} rules={item.rules}>
                   <Select style={{ width: item.width || 120 }} options={item.options}></Select>
+                </Form.Item>
+              )
+            case 'rangePicker':
+              return (
+                <Form.Item key={item.name} label={item.label} name={item.name} rules={item.rules}>
+                  <DatePicker.RangePicker showTime={item.showTime}></DatePicker.RangePicker>
                 </Form.Item>
               )
             default:

@@ -89,3 +89,32 @@ export namespace MeetingRoom {
     id: number
   }
 }
+
+export namespace Booking {
+  export interface IListQueryParams {
+    meetingRoomName: string
+    status: string
+    username: string
+    current: number
+    pageSize: number
+    [property: string]: any
+  }
+
+  export interface IBookingQueryData {
+    list: IBookingItem[]
+    total: number
+    [property: string]: any
+  }
+
+  export interface IBookingItem {
+    createTime?: string
+    endTime?: string
+    id?: number
+    room?: MeetingRoom.ListItem
+    startTime?: string
+    status?: string
+    updateTime?: string
+    user?: User.IUserInfoData
+    [property: string]: any
+  }
+}
