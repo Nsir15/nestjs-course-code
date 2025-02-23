@@ -10,6 +10,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { LoginGuard } from './guards/login.guard';
 import { PermissionGuard } from './guards/permission.guard';
 import { MeetingRoomModule } from './meeting-room/meeting-room.module';
+import { BookingModule } from './booking/booking.module';
 
 @Module({
   imports: [
@@ -54,9 +55,10 @@ import { MeetingRoomModule } from './meeting-room/meeting-room.module';
       poolSize: 10,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       connectorPackage: 'mysql2',
-      extra: {
-        authPlugin: 'sha256_password',
-      },
+      timezone: '+08:00', // 设置为中国上海时区
+      // extra: {
+      //   authPlugin: 'sha256_password',
+      // },
     }),
     JwtModule.registerAsync({
       global: true,
@@ -74,6 +76,7 @@ import { MeetingRoomModule } from './meeting-room/meeting-room.module';
     RedisModule,
     EmailModule,
     MeetingRoomModule,
+    BookingModule,
   ],
   controllers: [AppController],
   providers: [
