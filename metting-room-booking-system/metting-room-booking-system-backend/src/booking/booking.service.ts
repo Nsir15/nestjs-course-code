@@ -36,7 +36,18 @@ export class BookingService {
     }
 
     if (startTime && endTime) {
-      condition.startTime = Between(new Date(startTime), new Date(endTime));
+      /**
+       *  - 使用 Raw 操作符来构建自定义的 SQL 查询条件。
+          - 第一个条件检查数据库记录的开始时间是否在前端传递的时间范围内。
+          - 第二个条件检查数据库记录的结束时间是否在前端传递的时间范围内。
+          - 第三个条件检查数据库记录的时间范围是否完全包含前端传递的时间范围。
+          - 使用参数化查询来安全地传递 startTime 和 endTime 的值。 防止 SQL 注入
+       */
+      condition.startTime = Raw(
+        (alias) =>
+          `(${alias} BETWEEN :startTime AND :endTime OR endTime BETWEEN :startTime AND :endTime OR (${alias} <= :startTime AND endTime >= :endTime))`,
+        { startTime, endTime },
+      );
     }
 
     if (status) {
