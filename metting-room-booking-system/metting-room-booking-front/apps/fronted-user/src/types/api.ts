@@ -72,4 +72,56 @@ export namespace MeetingRoom {
     updateTime: string
     [property: string]: any
   }
+
+  export interface IBookingApplyParams {
+    endTime: string
+    remark: string
+    roomId: number
+    startTime: string
+    [property: string]: any
+  }
+}
+
+export namespace Booking {
+  export interface IBookingQueryParams {
+    meetingRoomName: string
+    startTime: string
+    endTime: string
+    pageSize?: number
+    current?: number
+    [key: string]: any
+  }
+
+  export interface IBookingData {
+    list: IBookingItem[]
+    total: number
+    [property: string]: any
+  }
+
+  export interface IBookingItem {
+    createTime?: string
+    endTime?: string
+    id?: number
+    room?: MeetingRoom.ListItem
+    startTime?: string
+    status?: string
+    updateTime?: string
+    user?: User
+    [property: string]: any
+  }
+
+  export interface User {
+    createTime: string
+    email: string
+    headPic: null
+    id: number
+    isAdmin: boolean
+    isFrozen: boolean
+    nickName: string
+    password: string
+    phoneNumber: null
+    updateTime: string
+    username: string
+    [property: string]: any
+  }
 }

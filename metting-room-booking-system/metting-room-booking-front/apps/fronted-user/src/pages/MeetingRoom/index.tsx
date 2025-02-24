@@ -1,14 +1,17 @@
-import { FC, memo, useMemo } from 'react'
+import { FC, memo, useMemo, useRef } from 'react'
 import { MeetingRoom } from '@/types/api'
 import { ISearchFormProps, PageTable, wrapRequest } from '@meeting-room/shared'
 import { useAntdTable } from 'ahooks'
 import { Button, Form } from 'antd'
 import Table, { ColumnsType } from 'antd/es/table'
 import { getMeetingRoomList } from '@/api/meetingRoom'
+import ApplyModal, { IApplyModalRef } from './ApplyModal'
+import dayjs from 'dayjs'
 
 interface IProps {}
 const Component: FC<IProps> = (props) => {
   const [form] = Form.useForm()
+  const applyModalRef = useRef<IApplyModalRef>(null)
   const searchFormConfig: ISearchFormProps['formFieldsConfig'] = useMemo(() => {
     return [
       {
@@ -72,6 +75,9 @@ const Component: FC<IProps> = (props) => {
       {
         title: '创建时间',
         dataIndex: 'createTime',
+        render: (_, record) => {
+          return record.createTime ? dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss') : ''
+        },
       },
       {
         title: '操作',
@@ -80,7 +86,14 @@ const Component: FC<IProps> = (props) => {
         width: 100,
         render: (_, record) => {
           return (
-            <Button color="primary" variant="link">
+            <Button
+              color="primary"
+              variant="link"
+              // disabled={record.status === MeetingRoom.Status.Reversed}
+              onClick={() =>
+                applyModalRef.current?.show({ roomId: record.id, meetingRoomName: record.name })
+              }
+            >
               预定
             </Button>
           )
@@ -116,15 +129,18 @@ const Component: FC<IProps> = (props) => {
   })
 
   return (
-    <PageTable
-      title=" 会议室列表"
-      form={form}
-      formFieldsConfig={searchFormConfig}
-      onReset={search.reset}
-      onSubmit={search.submit}
-    >
-      <Table {...tableProps} rowKey={'id'} columns={columns} bordered></Table>
-    </PageTable>
+    <>
+      <PageTable
+        title=" 会议室列表"
+        form={form}
+        formFieldsConfig={searchFormConfig}
+        onReset={search.reset}
+        onSubmit={search.submit}
+      >
+        <Table {...tableProps} rowKey={'id'} columns={columns} bordered></Table>
+      </PageTable>
+      <ApplyModal ref={applyModalRef}></ApplyModal>
+    </>
   )
 }
 
