@@ -1,6 +1,6 @@
-import { getBookingList } from '@/api/bookingManage'
+import { approveBooking, getBookingList, rejectBooking, unbindBooking } from '@/api/bookingManage'
 import { Booking } from '@/types/api'
-import { ISearchFormProps, PageTable, wrapRequest } from '@meeting-room/shared'
+import { ISearchFormProps, message, PageTable, wrapRequest } from '@meeting-room/shared'
 import { useAntdTable } from 'ahooks'
 import { Button, Form, Space } from 'antd'
 import Table, { ColumnsType } from 'antd/es/table'
@@ -91,21 +91,57 @@ const Component: FC<IProps> = () => {
         render: (_, record) => {
           return (
             <Space>
-              <Button color="primary" variant="link">
-                通过
-              </Button>
-              <Button color="primary" variant="link">
-                驳回
-              </Button>
-              <Button color="primary" variant="link">
-                解除
-              </Button>
+              {record.status !== '审批通过' && (
+                <Button
+                  color="primary"
+                  variant="link"
+                  onClick={() => handleBookingProcess(record.id!, 'approve')}
+                >
+                  通过
+                </Button>
+              )}
+              {record.status !== '审批驳回' && (
+                <Button
+                  color="primary"
+                  variant="link"
+                  onClick={() => handleBookingProcess(record.id!, 'reject')}
+                >
+                  驳回
+                </Button>
+              )}
+              {record.status !== '已解除' && (
+                <Button
+                  color="primary"
+                  variant="link"
+                  onClick={() => handleBookingProcess(record.id!, 'unbind')}
+                >
+                  解除
+                </Button>
+              )}
             </Space>
           )
         },
       },
     ]
   }, [])
+
+  const handleBookingProcess = async (bookingId: number, type: 'approve' | 'reject' | 'unbind') => {
+    const actionMap = {
+      approve: approveBooking,
+      reject: rejectBooking,
+      unbind: unbindBooking,
+    }
+
+    try {
+      const [error] = await wrapRequest(actionMap[type](bookingId))
+      if (!error) {
+        message.success('操作成功')
+        search.submit()
+      }
+    } catch (error) {
+      message.error('操作失败')
+    }
+  }
 
   const fetchData = async (
     { current, pageSize }: { current: number; pageSize: number },
