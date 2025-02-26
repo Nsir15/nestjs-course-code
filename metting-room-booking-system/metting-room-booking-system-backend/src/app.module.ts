@@ -11,6 +11,7 @@ import { LoginGuard } from './guards/login.guard';
 import { PermissionGuard } from './guards/permission.guard';
 import { MeetingRoomModule } from './meeting-room/meeting-room.module';
 import { BookingModule } from './booking/booking.module';
+import { MinioModule } from './minio/minio.module';
 
 @Module({
   imports: [
@@ -77,6 +78,7 @@ import { BookingModule } from './booking/booking.module';
     EmailModule,
     MeetingRoomModule,
     BookingModule,
+    MinioModule,
   ],
   controllers: [AppController],
   providers: [
