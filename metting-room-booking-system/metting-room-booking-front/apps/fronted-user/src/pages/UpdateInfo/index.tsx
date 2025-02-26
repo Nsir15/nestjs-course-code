@@ -1,7 +1,7 @@
 import { FC, memo, useEffect } from 'react'
 import styles from './index.module.scss'
 import { Button, Col, Form, Input, Row } from 'antd'
-import { wrapRequest } from '@meeting-room/shared'
+import { UploadAvatar, wrapRequest } from '@meeting-room/shared'
 import { getUpdateUserCaptcha, getUserInfo, updateUserInfo } from '@/api'
 import { message } from '@meeting-room/shared'
 
@@ -61,7 +61,7 @@ const Component: FC<IProps> = (props) => {
     <div className={styles.updateInfoContainer}>
       <Form form={form} autoComplete="off" {...defaultLayout}>
         <Form.Item label="头像" name="headPic">
-          <Input />
+          <UploadAvatar useMinio />
         </Form.Item>
         <Form.Item label="昵称" name="nickName">
           <Input />
