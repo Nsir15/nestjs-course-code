@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, MinLength } from 'class-validator';
 
 export class LoginDto {
   @IsNotEmpty({
@@ -7,6 +7,9 @@ export class LoginDto {
   username: string;
   @IsNotEmpty({
     message: '密码不能为空',
+  })
+  @MinLength(6, {
+    message: '密码长度不能小于6位',
   })
   password: string;
 }

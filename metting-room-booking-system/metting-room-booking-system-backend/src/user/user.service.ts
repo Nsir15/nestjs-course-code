@@ -101,6 +101,7 @@ export class UserService {
       this.logger.error(error, UserService);
       throw new HttpException('注册失败', HttpStatus.BAD_REQUEST);
     } finally {
+      await this.redisService.del(`captcha_${email}`);
       await queryRunner.release();
     }
   }
@@ -304,6 +305,8 @@ export class UserService {
     } catch (error) {
       this.logger.error(error, UserService);
       throw new HttpException('更新密码失败', HttpStatus.BAD_REQUEST);
+    } finally {
+      await this.redisService.del(`update_password_captcha_${email}`);
     }
   }
 
@@ -337,6 +340,8 @@ export class UserService {
     } catch (error) {
       this.logger.error(error, UserService);
       throw new HttpException('更新用户信息失败', HttpStatus.BAD_REQUEST);
+    } finally {
+      await this.redisService.del(`update_user_captcha_${userDto.email}`);
     }
   }
 

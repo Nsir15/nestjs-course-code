@@ -14,7 +14,7 @@ import { RegisterDto } from './dto/register.dto';
 import { RedisService } from 'src/redis/redis.service';
 import { EmailService } from 'src/email/email.service';
 import { LoginDto } from './dto/login.dto';
-import { JwtService, TokenExpiredError } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { LoginUserVo } from './vo/login-user.vo';
 import { RequireLogin, UserInfo } from 'src/decorator';
