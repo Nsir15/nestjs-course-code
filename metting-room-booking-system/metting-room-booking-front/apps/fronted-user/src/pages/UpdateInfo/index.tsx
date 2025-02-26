@@ -4,6 +4,7 @@ import { Button, Col, Form, Input, Row } from 'antd'
 import { UploadAvatar, wrapRequest } from '@meeting-room/shared'
 import { getUpdateUserCaptcha, getUserInfo, updateUserInfo } from '@/api'
 import { message } from '@meeting-room/shared'
+import { myUserStore } from '@/store'
 
 interface IProps {}
 
@@ -27,6 +28,7 @@ const layout1 = {
 
 const Component: FC<IProps> = (props) => {
   // const {} = props
+  const { updateUserInfo: storeUpdateUserInfo } = myUserStore()
 
   const [form] = Form.useForm()
 
@@ -41,6 +43,7 @@ const Component: FC<IProps> = (props) => {
     const values = await form.validateFields()
     const [error] = await wrapRequest(updateUserInfo(values))
     if (!error) {
+      storeUpdateUserInfo(values)
       message.success('修改成功')
       // form.resetFields()
     }

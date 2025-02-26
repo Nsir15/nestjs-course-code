@@ -7,7 +7,7 @@ export namespace Login {
   export interface ILoginResponse {
     accessToken: string
     refreshToken: string
-    userInfo: Record<string, any>
+    userInfo: Booking.User
   }
 
   export interface IRegisterUser {

@@ -4,6 +4,7 @@ import { Button, Form, Input, message } from 'antd'
 import { loginRequest } from '@/api'
 import { Storage, wrapRequest } from '@meeting-room/shared'
 import { useNavigate } from 'react-router-dom'
+import { myUserStore } from '@/store'
 
 const layout1 = {
   labelCol: {
@@ -27,6 +28,7 @@ const Component: FC<IProps> = (props) => {
   // const {} = props
   const [form] = Form.useForm()
   const navigate = useNavigate()
+  const { updateUserInfo } = myUserStore()
 
   const handleSubmit = async () => {
     const values = await form.validateFields()
@@ -34,7 +36,8 @@ const Component: FC<IProps> = (props) => {
     if (data) {
       Storage.set('token', data.accessToken)
       Storage.set('refreshToken', data.refreshToken)
-      Storage.set('userInfo', data.userInfo)
+      // Storage.set('userInfo', data.userInfo)
+      updateUserInfo(data.userInfo)
       message.success('登录成功')
       navigate('/', { replace: true })
     }
