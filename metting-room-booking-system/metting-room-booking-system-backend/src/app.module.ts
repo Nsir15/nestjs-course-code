@@ -12,12 +12,13 @@ import { PermissionGuard } from './guards/permission.guard';
 import { MeetingRoomModule } from './meeting-room/meeting-room.module';
 import { BookingModule } from './booking/booking.module';
 import { MinioModule } from './minio/minio.module';
+import * as path from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: 'src/.env',
+      envFilePath: path.join(__dirname, '.env'),
     }),
     // TypeOrmModule.forRootAsync({
     //   // imports: [ConfigModule],
@@ -45,7 +46,7 @@ import { MinioModule } from './minio/minio.module';
     // }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: 'mysql-container',
       port: 3306,
       username: 'root',
       password: 'mrnan',

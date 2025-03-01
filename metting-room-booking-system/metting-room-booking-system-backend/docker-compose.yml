@@ -1,0 +1,58 @@
+version: '3.8'
+services:
+  nest-app:
+    container_name: nest-app
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    depends_on:
+      - mysql-container
+      - redis-container
+    ports:
+      - 3005:3005
+    env_file:
+      - ./src/.env
+    restart: always
+    networks:
+      - common-network
+  mysql-container:
+    container_name: mysql-container
+    image: mysql
+    volumes:
+      - /Users/nx/Documents/work/docker_local_volume/mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: metting_room_booking_system
+      MYSQL_ROOT_PASSWORD: mrnan
+    ports:
+      - 3306:3306
+    restart: always
+    networks:
+      - common-network
+  redis-container:
+    container_name: redis-container
+    image: redis
+    volumes:
+      - /Users/nx/Documents/work/docker_local_volume/redis_data:/data
+    ports:
+      - 6379:6379
+    restart: always
+    networks:
+      - common-network
+
+  minio-container:
+    container_name: minio-container
+    image: bitnami/minio:latest
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      MINIO_ROOT_USER: marauder
+      MINIO_ROOT_PASSWORD: 88888888
+    volumes:
+      - /Users/nx/Documents/work/docker_local_volume/minio_data:/bitnami/minio/data
+    restart: always
+    networks:
+      - common-network
+networks:
+  common-network:
+    driver: bridge
